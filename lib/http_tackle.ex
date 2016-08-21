@@ -1,42 +1,35 @@
 defmodule HttpTackle do
-  defmodule Behaviour do
-    @callback handle_message(String.t) :: any
-  end
+  @callback handle_message(String.t) :: any
 
   defmacro __using__(options) do
-    tackle_options = ${
-      url: Keyword.fetch!(options, :url),
-      exchange: Keyword.fetch!(options, :exchange),
-      routing_key: Keyword.fetch!(options, :routing_key)
-    }
+    port        = Keyword.fetch!(options, :http_port)
+    url         = Keyword.fetch!(options, :amqp_url)
+    exchange    = Keyword.fetch!(options, :exchange)
+    routing_key = Keyword.fetch!(options, :routing_key)
 
     quote do
       @behaviour HttpTackle
 
-      require Logger
-      use Plug.Router
+      def start_link do
+        import Supervisor.Spec
 
-      plug :match
-      plug :dispatch
+        options = [
+          module: __MODULE__,
+          url: unquote(url),
+          exchange: unquote(exchange),
+          routing_key: unquote(routing_key)
+        ]
 
-      post "/" do
-        {:ok, raw_body, _} = Plug.Conn.read_body(conn)
+        children = [
+          Plug.Adapters.Cowboy.child_spec(:http, HttpTackle.Listener, options, [port: unquote(port)])
+        ]
 
-        case handle_message(raw_body) do
-          {:ok, message} ->
-            Tackle.publish(message, unquote(tackle_options))
-            send_resp(conn, 202, "")
-          {:error, reason} ->
-            send_resp(conn, 400, reason)
-        end
-      end
-
-      match _ do
-        send_resp(conn, 404, "oops")
+        opts = [strategy: :one_for_one, name: __MODULE__]
+        Supervisor.start_link(children, opts)
       end
 
       def handle_message(payload), do: {:ok, payload}
-      defoveridable [handle_message: 1]
+      defoverridable [handle_message: 1]
     end
   end
 end

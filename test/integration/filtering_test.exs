@@ -1,4 +1,4 @@
-defmodule HttpTackleTest do
+defmodule FilteringTest do
   use ExUnit.Case
   doctest HttpTackle
 

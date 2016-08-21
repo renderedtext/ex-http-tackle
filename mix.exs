@@ -15,7 +15,8 @@ defmodule HttpTackle.Mixfile do
       :plug,
       :cowboy,
       :logger,
-      :tackle
+      :tackle,
+      :httpotion
     ]]
   end
 
@@ -24,6 +25,7 @@ defmodule HttpTackle.Mixfile do
      {:tackle, git: "git@github.com:renderedtext/ex-tackle", red: "origin/master"},
      {:cowboy, "~> 1.0"},
      {:plug, "~> 1.0"},
+     {:httpotion, "~> 3.0.0"}
     ]
   end
 end

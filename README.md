@@ -27,9 +27,10 @@ First, define a HTTP tackle consumer:
 ``` elixir
 defmodule TestConsumer do
   use HttpTackle,
-    url: "amqp://localhost",
+    http_port: 80,
+    amqp_url: "amqp://localhost",
     exchange: "test-exchange",
-    routing_key: "test-key",
+    routing_key: "test-key"
 end
 ```
 
@@ -52,9 +53,10 @@ In the next example we will add a `Hi!` string to our incoming messages:
 ``` elixir
 defmodule TestConsumer do
   use HttpTackle,
-    url: "amqp://localhost",
+    http_port: 80,
+    amqp_url: "amqp://localhost",
     exchange: "test-exchange",
-    routing_key: "test-key",
+    routing_key: "test-key"
 
   def handle_message(payload) do
     new_payload = "#{payload} Hi!"
@@ -74,9 +76,10 @@ In the next example we reject all messages that contain the `test` substring.
 ``` elixir
 defmodule TestConsumer do
   use HttpTackle,
-    url: "amqp://localhost",
+    http_port: 80,
+    amqp_url: "amqp://localhost",
     exchange: "test-exchange",
-    routing_key: "test-key",
+    routing_key: "test-key"
 
   def handle_message(payload) do
     if payload =~ ~r/test/ do
@@ -98,9 +101,10 @@ defmodule TestConsumer do
   require Logger
 
   use HttpTackle,
-    url: "amqp://localhost",
+    http_port: 80,
+    amqp_url: "amqp://localhost",
     exchange: "test-exchange",
-    routing_key: "test-key",
+    routing_key: "test-key"
 
   def handle_message(payload) do
     size = length(payload)
