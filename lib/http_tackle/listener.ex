@@ -12,7 +12,7 @@ defmodule HttpTackle.Listener do
 
     case apply(callback_module, :handle_message, [raw_body]) do
       {:ok, message} ->
-         publish(raw_body, options)
+         publish(message, options)
          send_resp(conn, 202, "")
       {:error, reason} ->
          send_resp(conn, 400, reason)
