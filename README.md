@@ -45,6 +45,7 @@ if you want to:
 1. Modify incoming messages
 2. Filter incoming messages
 3. Measure incoming messages
+4. Define custom routing keys
 
 ### Modifying incoming messages
 
@@ -58,7 +59,7 @@ defmodule TestConsumer do
     exchange: "test-exchange",
     routing_key: "test-key"
 
-  def handle_message(payload) do
+  def handle_message(_conn, payload) do
     new_payload = "#{payload} Hi!"
 
     {:ok, new_payload}
@@ -81,7 +82,7 @@ defmodule TestConsumer do
     exchange: "test-exchange",
     routing_key: "test-key"
 
-  def handle_message(payload) do
+  def handle_message(_conn, payload) do
     if payload =~ ~r/test/ do
       {:error, "Messages with 'test' substring are rejected"}
     else
@@ -106,12 +107,37 @@ defmodule TestConsumer do
     exchange: "test-exchange",
     routing_key: "test-key"
 
-  def handle_message(payload) do
+  def handle_message(_conn, payload) do
     size = length(payload)
 
     Logger.info "Message size is: #{size} bytes"
 
     {:ok, payload}
+  end
+end
+```
+
+### Defining custom routing keys
+
+In the next example, we will choose a routing key based on the path of the
+incoming message:
+
+``` elixir
+defmodule TestConsumer do
+  require Logger
+
+  use HttpTackle,
+    http_port: 80,
+    amqp_url: "amqp://localhost",
+    exchange: "test-exchange",
+    routing_key: "default-key"
+
+  def handle_message(conn, payload) do
+    if conn.request_path == "/testing" do
+      {:ok, payload, "testing"}
+    else
+      {:ok, payload} # use default routing key
+    end
   end
 end
 ```
