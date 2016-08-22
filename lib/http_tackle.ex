@@ -1,5 +1,5 @@
 defmodule HttpTackle do
-  @callback handle_message(String.t) :: any
+  @callback handle_message(Any.t, String.t) :: any
 
   defmacro __using__(options) do
     port        = Keyword.fetch!(options, :http_port)
@@ -28,8 +28,8 @@ defmodule HttpTackle do
         Supervisor.start_link(children, opts)
       end
 
-      def handle_message(payload), do: {:ok, payload}
-      defoverridable [handle_message: 1]
+      def handle_message(_conn, payload), do: {:ok, payload}
+      defoverridable [handle_message: 2]
     end
   end
 end

@@ -4,7 +4,7 @@ defmodule HttpTackleTest do
 
   defmodule HttpTackleConsumer do
     use HttpTackle,
-      http_port: 8888,
+      http_port: 2222,
       amqp_url: "amqp://localhost",
       exchange: "test-exchange",
       routing_key: "test-key"
@@ -23,12 +23,12 @@ defmodule HttpTackleTest do
   end
 
   test "sending message over HTTP" do
-    {:ok, _} = HttpTackleConsumer.start_link
-    {:ok, _} = TestService.start_link
+    HttpTackleConsumer.start_link
+    TestService.start_link
 
     :timer.sleep(1000)
 
-    HTTPotion.post("http://localhost:8888", body: "Hi!")
+    HTTPotion.post("http://localhost:2222", body: "Hi!")
 
     :timer.sleep(1000)
 

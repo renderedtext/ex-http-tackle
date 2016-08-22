@@ -4,12 +4,12 @@ defmodule ModificationTest do
 
   defmodule HttpTackleConsumer do
     use HttpTackle,
-      http_port: 8888,
+      http_port: 7777,
       amqp_url: "amqp://localhost",
       exchange: "test-exchange",
       routing_key: "test-key"
 
-    def handle_message(message) do
+    def handle_message(_conn, message) do
       {:ok, "#{message} and some modifications"}
     end
   end
@@ -26,19 +26,22 @@ defmodule ModificationTest do
     end
   end
 
-  setup do
-    {:ok, _} = HttpTackleConsumer.start_link
-    {:ok, _} = TestService.start_link
-
-    File.write("/tmp/messages", "No messages")
+  setup_all do
+    HttpTackleConsumer.start_link
+    TestService.start_link
 
     :timer.sleep(1000)
 
     :ok
   end
 
+  setup do
+    File.write("/tmp/messages", "No messages")
+    :ok
+  end
+
   test "appends a string to the incomming message" do
-    HTTPotion.post("http://localhost:8888", body: "Hi")
+    HTTPotion.post("http://localhost:7777", body: "Hi")
 
     :timer.sleep(1000)
 

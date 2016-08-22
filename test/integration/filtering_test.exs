@@ -1,5 +1,5 @@
 defmodule FilteringTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   doctest HttpTackle
 
   defmodule HttpTackleConsumer do
@@ -9,7 +9,7 @@ defmodule FilteringTest do
       exchange: "test-exchange",
       routing_key: "test-key"
 
-    def handle_message(message) do
+    def handle_message(_conn, message) do
       if String.contains?(message, "tackle") do
         {:ok, message}
       else
@@ -30,13 +30,17 @@ defmodule FilteringTest do
     end
   end
 
-  setup do
-    {:ok, _} = HttpTackleConsumer.start_link
-    {:ok, _} = TestService.start_link
-
-    File.write("/tmp/messages", "No messages")
+  setup_all do
+    {:ok, http_tackle_consumer} = HttpTackleConsumer.start_link
+    {:ok, service} = TestService.start_link
 
     :timer.sleep(1000)
+
+    :ok
+  end
+
+  setup do
+    File.write("/tmp/messages", "No messages")
 
     :ok
   end
