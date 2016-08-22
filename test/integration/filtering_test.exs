@@ -9,7 +9,7 @@ defmodule FilteringTest do
       exchange: "test-exchange",
       routing_key: "test-key"
 
-    def handle_message(message) do
+    def handle_message(_conn, message) do
       if String.contains?(message, "tackle") do
         {:ok, message}
       else

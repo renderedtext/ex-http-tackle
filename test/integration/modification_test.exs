@@ -9,7 +9,7 @@ defmodule ModificationTest do
       exchange: "test-exchange",
       routing_key: "test-key"
 
-    def handle_message(message) do
+    def handle_message(_conn, message) do
       {:ok, "#{message} and some modifications"}
     end
   end

@@ -6,12 +6,12 @@ defmodule CustomRoutingKeysTest do
     use HttpTackle,
       http_port: 8888,
       amqp_url: "amqp://localhost",
-      exchange: "test-exchange",
+      exchange: "custom-keys-exchange",
       routing_key: "default-keys"
 
     def handle_message(conn, message) do
-      if conn.request_path == "/special"
-        {:ok, message, "special-key"}
+      if conn.request_path == "/special" do
+        {:ok, message, "special-keys"}
       else
         {:ok, message}
       end
@@ -21,9 +21,9 @@ defmodule CustomRoutingKeysTest do
   defmodule DefaultKeysService do
     use Tackle.Consumer,
       url: "amqp://localhost",
-      exchange: "test-exchange",
+      exchange: "custom-keys-exchange",
       routing_key: "default-keys",
-      service: "test-service"
+      service: "default-service"
 
     def handle_message(message) do
       File.write("/tmp/default-messages", message, [:write])
@@ -33,27 +33,29 @@ defmodule CustomRoutingKeysTest do
   defmodule SpecialKeysService do
     use Tackle.Consumer,
       url: "amqp://localhost",
-      exchange: "test-exchange",
+      exchange: "custom-keys-exchange",
       routing_key: "special-keys",
-      service: "test-service"
+      service: "special-service"
 
     def handle_message(message) do
       File.write("/tmp/special-messages", message, [:write])
     end
   end
 
-  setup do
+  setup_all do
     {:ok, _} = HttpTackleConsumer.start_link
 
-    {:ok, _} = DefaultKeysService.start_link
-    {:ok, _} = SpecialKeysService.start_link
-
-    File.write("/tmp/default-messages", "No messages")
-    File.write("/tmp/special-messages", "No messages")
+    {:ok, default_tackle} = DefaultKeysService.start_link
+    {:ok, special_tackle} = SpecialKeysService.start_link
 
     :timer.sleep(1000)
 
     :ok
+  end
+
+  setup do
+    File.write("/tmp/default-messages", "No messages")
+    File.write("/tmp/special-messages", "No messages")
   end
 
   test "publishes message with 'special-key' when the payload comes to '/special'" do
