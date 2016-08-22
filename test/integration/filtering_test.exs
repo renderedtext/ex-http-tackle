@@ -31,10 +31,14 @@ defmodule FilteringTest do
   end
 
   setup_all do
-    {:ok, http_tackle_consumer} = HttpTackleConsumer.start_link
-    {:ok, service} = TestService.start_link
+    HttpTackleConsumer.start_link
+    TestService.start_link
 
     :timer.sleep(1000)
+
+    on_exit fn ->
+      :timer.sleep(3000) # wait for unix ports to be free again
+    end
 
     :ok
   end

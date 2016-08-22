@@ -4,7 +4,7 @@ defmodule ModificationTest do
 
   defmodule HttpTackleConsumer do
     use HttpTackle,
-      http_port: 7777,
+      http_port: 8888,
       amqp_url: "amqp://localhost",
       exchange: "test-exchange",
       routing_key: "test-key"
@@ -32,6 +32,10 @@ defmodule ModificationTest do
 
     :timer.sleep(1000)
 
+    on_exit fn ->
+      :timer.sleep(3000) # wait for unix ports to be free again
+    end
+
     :ok
   end
 
@@ -41,7 +45,7 @@ defmodule ModificationTest do
   end
 
   test "appends a string to the incomming message" do
-    HTTPotion.post("http://localhost:7777", body: "Hi")
+    HTTPotion.post("http://localhost:8888", body: "Hi")
 
     :timer.sleep(1000)
 
