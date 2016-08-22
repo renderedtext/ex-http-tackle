@@ -4,7 +4,7 @@ defmodule CustomRoutingKeysTest do
 
   defmodule HttpTackleConsumer do
     use HttpTackle,
-      http_port: 8888,
+      http_port: 9999,
       amqp_url: "amqp://localhost",
       exchange: "custom-keys-exchange",
       routing_key: "default-keys"
@@ -43,10 +43,9 @@ defmodule CustomRoutingKeysTest do
   end
 
   setup_all do
-    {:ok, _} = HttpTackleConsumer.start_link
-
-    {:ok, default_tackle} = DefaultKeysService.start_link
-    {:ok, special_tackle} = SpecialKeysService.start_link
+    HttpTackleConsumer.start_link
+    DefaultKeysService.start_link
+    SpecialKeysService.start_link
 
     :timer.sleep(1000)
 
@@ -59,7 +58,7 @@ defmodule CustomRoutingKeysTest do
   end
 
   test "publishes message with 'special-key' when the payload comes to '/special'" do
-    HTTPotion.post("http://localhost:8888/special", body: "Hi!")
+    HTTPotion.post("http://localhost:9999/special", body: "Hi!")
 
     :timer.sleep(1000)
 
@@ -68,7 +67,7 @@ defmodule CustomRoutingKeysTest do
   end
 
   test "publishes message with 'default-key' any other path" do
-    HTTPotion.post("http://localhost:8888/something", body: "Hi!")
+    HTTPotion.post("http://localhost:9999/something", body: "Hi!")
 
     :timer.sleep(1000)
 
