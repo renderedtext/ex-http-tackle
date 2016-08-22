@@ -9,11 +9,14 @@ defmodule HttpTackle do
 
     quote do
       @behaviour HttpTackle
+      use Supervisor
+      require Logger
 
       def start_link do
-        require Logger
-        import Supervisor.Spec
+        Supervisor.start_link(__MODULE__, [])
+      end
 
+      def init([]) do
         options = [
           module: __MODULE__,
           url: unquote(url),
@@ -27,8 +30,7 @@ defmodule HttpTackle do
           Plug.Adapters.Cowboy.child_spec(:http, HttpTackle.Listener, options, [port: unquote(port)])
         ]
 
-        opts = [strategy: :one_for_one, name: __MODULE__]
-        Supervisor.start_link(children, opts)
+        supervise(children, strategy: :one_for_one, name: __MODULE__)
       end
 
       def handle_message(_conn, payload), do: {:ok, payload}
