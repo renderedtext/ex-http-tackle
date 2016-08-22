@@ -11,6 +11,7 @@ defmodule HttpTackle do
       @behaviour HttpTackle
 
       def start_link do
+        require Logger
         import Supervisor.Spec
 
         options = [
@@ -19,6 +20,8 @@ defmodule HttpTackle do
           exchange: unquote(exchange),
           routing_key: unquote(routing_key)
         ]
+
+        Logger.info "Listening on port: #{unquote(port)}"
 
         children = [
           Plug.Adapters.Cowboy.child_spec(:http, HttpTackle.Listener, options, [port: unquote(port)])
