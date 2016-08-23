@@ -1,5 +1,6 @@
 defmodule HttpTackle.Listener do
   import Plug.Conn
+  require Logger
 
   def init(options) do
     options
