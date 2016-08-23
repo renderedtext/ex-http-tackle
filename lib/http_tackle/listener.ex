@@ -34,7 +34,7 @@ defmodule HttpTackle.Listener do
       routing_key: Keyword.get(options, :routing_key)
     }
 
-    Logger.info "Publishing message with routing_key: '#{routing_key}'"
+    Logger.info "Publishing message with routing_key: '#{Keyword.get(options, :routing_key)}'"
 
     Tackle.publish(message, tackle_options)
   end
