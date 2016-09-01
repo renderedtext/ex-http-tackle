@@ -22,7 +22,7 @@ defmodule HttpTackle.Mixfile do
 
   defp deps do
     [
-     {:tackle, git: "git@github.com:renderedtext/ex-tackle", red: "origin/master"},
+     {:tackle, github: "renderedtext/ex-tackle"},
      {:cowboy, "~> 1.0"},
      {:plug, "~> 1.0"},
      {:httpotion, "~> 3.0.0"}
