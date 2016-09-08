@@ -11,7 +11,7 @@ defmodule CustomRoutingKeysTest do
 
     def handle_message(conn, message) do
       if conn.request_path == "/special" do
-        {:ok, message, "special-keys"}
+        {:ok, message, routing_key: "special-keys"}
       else
         {:ok, message}
       end

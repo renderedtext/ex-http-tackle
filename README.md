@@ -134,7 +134,7 @@ defmodule TestConsumer do
 
   def handle_message(conn, payload) do
     if conn.request_path == "/testing" do
-      {:ok, payload, "testing"}
+      {:ok, payload, routing_key: "testing"}
     else
       {:ok, payload} # use default routing key
     end

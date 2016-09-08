@@ -12,7 +12,7 @@ defmodule HttpTackle.Listener do
     callback_module = Keyword.get(options, :module)
 
     case apply(callback_module, :handle_message, [conn, raw_body]) do
-      {:ok, message, routing_key} ->
+      {:ok, message, [routing_key: routing_key]} ->
         publish(message, Keyword.put(options, :routing_key, routing_key))
         send_resp(conn, 202, "")
       {:ok, message} ->
