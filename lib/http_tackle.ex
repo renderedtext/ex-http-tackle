@@ -5,7 +5,7 @@ defmodule HttpTackle do
     port        = Keyword.fetch!(options, :http_port)
     url         = Keyword.fetch!(options, :amqp_url)
     exchange    = Keyword.fetch!(options, :exchange)
-    routing_key = Keyword.fetch!(options, :routing_key)
+    routing_key = Keyword.get(options, :routing_key) || ""
 
     quote do
       @behaviour HttpTackle
