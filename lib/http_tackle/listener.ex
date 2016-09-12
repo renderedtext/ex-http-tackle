@@ -24,6 +24,8 @@ defmodule HttpTackle.Listener do
   end
 
   def call(conn, _) do
+    Logger.error("Rejecting request method: '#{conn.method}'")
+
     send_resp(conn, 403, "Rejected")
   end
 
