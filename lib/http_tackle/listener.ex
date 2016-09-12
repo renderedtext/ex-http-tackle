@@ -7,19 +7,21 @@ defmodule HttpTackle.Listener do
   end
 
   def call(conn = %{method: "POST"}, options) do
-    {:ok, raw_body, _} = Plug.Conn.read_body(conn)
+    spawn fn ->
+      {:ok, raw_body, _} = Plug.Conn.read_body(conn)
 
-    callback_module = Keyword.get(options, :module)
+      callback_module = Keyword.get(options, :module)
 
-    case apply(callback_module, :handle_message, [conn, raw_body]) do
-      {:ok, message, [routing_key: routing_key]} ->
-        publish(message, Keyword.put(options, :routing_key, routing_key))
-        send_resp(conn, 202, "")
-      {:ok, message} ->
-        publish(message, options)
-        send_resp(conn, 202, "")
-      {:error, reason} ->
-        send_resp(conn, 400, reason)
+      case apply(callback_module, :handle_message, [conn, raw_body]) do
+        {:ok, message, [routing_key: routing_key]} ->
+          publish(message, Keyword.put(options, :routing_key, routing_key))
+          send_resp(conn, 202, "")
+        {:ok, message} ->
+          publish(message, options)
+          send_resp(conn, 202, "")
+        {:error, reason} ->
+          send_resp(conn, 400, reason)
+      end
     end
   end
 
