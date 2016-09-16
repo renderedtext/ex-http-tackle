@@ -7,7 +7,7 @@ defmodule HttpTackle.Listener do
   end
 
   def call(conn = %{method: "POST"}, options) do
-    {:ok, raw_body, _} = Plug.Conn.read_body(conn)
+    {:ok, raw_body, conn} = Plug.Conn.read_body(conn)
 
     callback_module = Keyword.get(options, :module)
 
