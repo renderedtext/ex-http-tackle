@@ -50,7 +50,7 @@ defmodule FilteringTest do
   end
 
   test "rejects messages that doesn't contain the 'tackle' substring" do
-    HTTPotion.post("http://localhost:8888", body: "Hi!")
+    HTTPoison.post("http://localhost:8888", "Hi!")
 
     :timer.sleep(1000)
 
@@ -58,7 +58,7 @@ defmodule FilteringTest do
   end
 
   test "accepts messages that contain the 'tackle' substring" do
-    HTTPotion.post("http://localhost:8888", body: "Hi tackle!")
+    HTTPoison.post("http://localhost:8888", "Hi tackle!")
 
     :timer.sleep(1000)
 
