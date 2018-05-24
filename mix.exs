@@ -4,10 +4,10 @@ defmodule HttpTackle.Mixfile do
   def project do
     [app: :http_tackle,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.5",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   def application do
@@ -16,7 +16,7 @@ defmodule HttpTackle.Mixfile do
       :cowboy,
       :logger,
       :tackle,
-      :httpotion
+      :httpoison
     ]]
   end
 
@@ -24,8 +24,8 @@ defmodule HttpTackle.Mixfile do
     [
      {:tackle, github: "renderedtext/ex-tackle"},
      {:cowboy, "~> 1.0"},
-     {:plug, "~> 1.0"},
-     {:httpotion, "~> 3.0.0"}
+     {:plug, "~> 1.5"},
+     {:httpoison, "~> 1.1"}
     ]
   end
 end

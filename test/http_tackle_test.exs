@@ -34,7 +34,7 @@ defmodule HttpTackleTest do
   end
 
   test "sending message over HTTP" do
-    HTTPotion.post("http://localhost:8888", body: "Hi!")
+    HTTPoison.post("http://localhost:8888", "Hi!")
 
     :timer.sleep(1000)
 

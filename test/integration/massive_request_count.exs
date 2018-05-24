@@ -38,7 +38,7 @@ defmodule HttpTackleTest do
 
     (1..100) |> Enum.each(fn(index) ->
       IO.puts "Sending request #{index}"
-      HTTPotion.post("http://localhost:8888", body: "##{index}")
+      HTTPoison.post("http://localhost:8888", "##{index}")
     end)
 
     :timer.sleep(3000)

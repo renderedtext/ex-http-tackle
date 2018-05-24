@@ -62,7 +62,7 @@ defmodule CustomRoutingKeysTest do
   end
 
   test "publishes message with 'special-key' when the payload comes to '/special'" do
-    HTTPotion.post("http://localhost:8888/special", body: "Hi!")
+    HTTPoison.post("http://localhost:8888/special", "Hi!")
 
     :timer.sleep(1000)
 
@@ -71,7 +71,7 @@ defmodule CustomRoutingKeysTest do
   end
 
   test "publishes message with 'default-key' any other path" do
-    HTTPotion.post("http://localhost:8888/something", body: "Hi!")
+    HTTPoison.post("http://localhost:8888/something", "Hi!")
 
     :timer.sleep(1000)
 

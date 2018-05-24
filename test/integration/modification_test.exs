@@ -45,7 +45,7 @@ defmodule ModificationTest do
   end
 
   test "appends a string to the incomming message" do
-    HTTPotion.post("http://localhost:8888", body: "Hi")
+    HTTPoison.post("http://localhost:8888", "Hi")
 
     :timer.sleep(1000)
 
